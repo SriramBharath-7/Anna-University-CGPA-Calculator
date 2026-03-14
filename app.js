@@ -164,10 +164,11 @@ function downloadPdfReport() {
   const mr = W - 20;     // right margin
   const cw = mr - ml;    // content width = 170
 
-  // Columns: Subject (wide), Grade, Credits
-  const colSub  = { x: ml,      w: 110 };
-  const colGrd  = { x: ml+110,  w: 30  };
-  const colCrd  = { x: ml+140,  w: 30  };
+  // Columns: Subject, Grade, Credits, Grade Points
+  const colSub  = { x: ml,      w: 90 };
+  const colGrd  = { x: ml+90,   w: 27 };
+  const colCrd  = { x: ml+117,  w: 27 };
+  const colGP   = { x: ml+144,  w: 26 };
   const cx = (c) => c.x + c.w / 2;
 
   const rowH = 9;
@@ -191,15 +192,18 @@ function downloadPdfReport() {
   doc.line(ml, y, mr, y);
   y += 8;
 
+  const tableStartY = y;
+
   // ── Table header ─────────────────────────────────────
   doc.setFillColor(30, 30, 30);
   doc.rect(ml, y, cw, rowH, "F");
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
   doc.setTextColor(255, 255, 255);
-  doc.text("Subject",  colSub.x + 3, y + 6);
-  doc.text("Grade",    cx(colGrd),    y + 6, { align: "center" });
-  doc.text("Credits",  cx(colCrd),    y + 6, { align: "center" });
+  doc.text("Subject",      colSub.x + 3, y + 6);
+  doc.text("Grade",        cx(colGrd),   y + 6, { align: "center" });
+  doc.text("Credits",      cx(colCrd),   y + 6, { align: "center" });
+  doc.text("Grade Points", cx(colGP),    y + 6, { align: "center" });
   y += rowH;
 
   // ── Rows ─────────────────────────────────────────────
@@ -217,16 +221,17 @@ function downloadPdfReport() {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
     doc.setTextColor(30, 30, 30);
-    doc.text(s.subjectName,      colSub.x + 3, y + 6, { maxWidth: colSub.w - 5 });
-    doc.text(s.grade,            cx(colGrd),   y + 6, { align: "center" });
-    doc.text(String(s.credits),  cx(colCrd),   y + 6, { align: "center" });
+    doc.text(s.subjectName,         colSub.x + 3, y + 6, { maxWidth: colSub.w - 5 });
+    doc.text(s.grade,               cx(colGrd),   y + 6, { align: "center" });
+    doc.text(String(s.credits),     cx(colCrd),   y + 6, { align: "center" });
+    doc.text(String(s.gradePoint),  cx(colGP),    y + 6, { align: "center" });
     y += rowH;
   });
 
   // outer table border
   doc.setDrawColor(180, 180, 180);
   doc.setLineWidth(0.4);
-  doc.rect(ml, 35, cw, y - 35);
+  doc.rect(ml, tableStartY, cw, y - tableStartY);
 
   y += 10;
 
