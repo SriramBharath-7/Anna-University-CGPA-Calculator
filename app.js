@@ -156,81 +156,213 @@ function downloadPdfReport() {
   }
 
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 16;
-  const contentWidth = pageWidth - (margin * 2);
+  const doc = new jsPDF({ unit: "mm", format: "a4" });
+  const W = doc.internal.pageSize.getWidth();   // 210mm
+  const H = doc.internal.pageSize.getHeight();  // 297mm
 
-  function drawTableHeader(topY) {
-    doc.setFillColor(15, 23, 42);
-    doc.roundedRect(margin, topY, contentWidth, 10, 2, 2, "F");
-    doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(11);
-    doc.text("Subject", 22, topY + 6.5);
-    doc.text("Grade", 126, topY + 6.5);
-    doc.text("Credits", 154, topY + 6.5);
-    doc.text("Point", 188, topY + 6.5, { align: "right" });
-    doc.setTextColor(33, 37, 41);
-    return topY + 12;
-  }
+  // ── Colour palette ──────────────────────────────────
+  const C = {
+    navy:   [11, 20, 50],
+    indigo: [99, 102, 241],
+    white:  [255, 255, 255],
+    s50:    [248, 250, 252],
+    s100:   [241, 245, 249],
+    s200:   [226, 232, 240],
+    s400:   [148, 163, 184],
+    s500:   [100, 116, 139],
+    s700:   [51, 65, 85],
+    s900:   [15, 23, 42],
+    dim:    [170, 185, 220],
+  };
 
-  doc.setDrawColor(30, 41, 59);
-  doc.setFillColor(248, 250, 252);
-  doc.roundedRect(10, 10, pageWidth - 20, pageHeight - 20, 6, 6, "FD");
+  const ml = 20, cw = 170;   // left margin 20, content width 170mm
 
-  doc.setFillColor(14, 22, 48);
-  doc.roundedRect(margin, 16, contentWidth, 22, 4, 4, "F");
+  // Column definitions (x = absolute mm from page left)
+  const col = {
+    sno: { x: ml,       w: 10 },
+    sub: { x: ml + 10,  w: 75 },
+    grd: { x: ml + 85,  w: 20 },
+    crd: { x: ml + 105, w: 22 },
+    gp:  { x: ml + 127, w: 23 },
+    wtd: { x: ml + 150, w: 20 },
+  };
+  const cx = (c) => c.x + c.w / 2;   // column centre x
 
-  doc.setTextColor(255, 255, 255);
+  // ── HEADER BAND ─────────────────────────────────────
+  doc.setFillColor(...C.navy);
+  doc.rect(0, 0, W, 42, "F");
+
+  // Left accent stripe
+  doc.setFillColor(...C.indigo);
+  doc.rect(ml, 11, 1.2, 20, "F");
+
+  // University name
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
-  doc.text("Anna University CGPA Calculator", 22, 26);
+  doc.setTextColor(...C.white);
+  doc.text("Anna University", ml + 6, 21);
 
+  // Subtitle
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.text(`Report Date: ${new Date().toLocaleString()}`, 22, 33);
+  doc.setFontSize(10.5);
+  doc.setTextColor(...C.dim);
+  doc.text("CGPA Performance Report  ·  Regulation 2021", ml + 6, 29);
 
-  doc.setTextColor(33, 37, 41);
+  // Date — right-aligned
+  doc.setFontSize(8.5);
+  doc.text(
+    `Generated: ${new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}`,
+    W - ml, 36, { align: "right" }
+  );
 
-  let y = drawTableHeader(46);
+  // Bottom indigo line
+  doc.setFillColor(...C.indigo);
+  doc.rect(0, 42, W, 1.2, "F");
 
-  lastCalculation.subjects.forEach((subject) => {
-    if (y > 262) {
-      doc.addPage();
-      doc.setDrawColor(30, 41, 59);
-      doc.setFillColor(248, 250, 252);
-      doc.roundedRect(10, 10, pageWidth - 20, pageHeight - 20, 6, 6, "FD");
-      y = drawTableHeader(20);
-    }
+  // ── SUMMARY CARDS ───────────────────────────────────
+  let y = 52;
 
-    doc.setFillColor(y % 20 === 0 ? 255 : 245, y % 20 === 0 ? 255 : 247, y % 20 === 0 ? 255 : 250);
-    doc.roundedRect(margin, y - 6.5, contentWidth, 10, 1.5, 1.5, "F");
-    doc.setDrawColor(226, 232, 240);
-    doc.roundedRect(margin, y - 6.5, contentWidth, 10, 1.5, 1.5, "S");
+  const cgpaVal  = lastCalculation.cgpa.toFixed(2);
+  const perfLabel =
+    parseFloat(cgpaVal) >= 9   ? "First Class with Distinction" :
+    parseFloat(cgpaVal) >= 7.5 ? "First Class" :
+    parseFloat(cgpaVal) >= 6   ? "Second Class" : "Pass Class";
+
+  const cards = [
+    { label: "SEMESTER",      value: "I"                                  },
+    { label: "TOTAL CREDITS", value: String(lastCalculation.totalCredits) },
+    { label: "CGPA",          value: cgpaVal                              },
+  ];
+
+  const cardW = (cw - 8) / 3;
+  cards.forEach((card, i) => {
+    const bx = ml + i * (cardW + 4);
+    doc.setFillColor(...C.s100);
+    doc.setDrawColor(...C.s200);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(bx, y, cardW, 20, 2.5, 2.5, "FD");
+    // indigo top accent
+    doc.setFillColor(...C.indigo);
+    doc.roundedRect(bx, y, cardW, 1.5, 0.5, 0.5, "F");
+    // label
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(10.5);
-    doc.text(subject.subjectName, 22, y, { maxWidth: 96 });
-    doc.text(subject.grade, 126, y);
-    doc.text(String(subject.credits), 154, y);
-    doc.text(String(subject.gradePoint), 188, y, { align: "right" });
-    y += 10;
+    doc.setFontSize(7.5);
+    doc.setTextColor(...C.s500);
+    doc.text(card.label, bx + cardW / 2, y + 8.5, { align: "center" });
+    // value
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(card.label === "CGPA" ? 16 : 14);
+    doc.setTextColor(...C.s900);
+    doc.text(card.value, bx + cardW / 2, y + 17, { align: "center" });
   });
 
-  y += 4;
-
-  doc.setFillColor(241, 245, 249);
-  doc.roundedRect(margin, y, 82, 16, 3, 3, "F");
-  doc.roundedRect(pageWidth - margin - 56, y, 56, 16, 3, 3, "F");
-  doc.setDrawColor(203, 213, 225);
-  doc.roundedRect(margin, y, 82, 16, 3, 3, "S");
-  doc.roundedRect(pageWidth - margin - 56, y, 56, 16, 3, 3, "S");
-
+  // Performance tag — right-aligned
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(13);
-  doc.text(`Total Credits: ${lastCalculation.totalCredits}`, 22, y + 10);
-  doc.text(`CGPA: ${lastCalculation.cgpa.toFixed(2)}`, pageWidth - margin - 28, y + 10, { align: "center" });
+  doc.setFontSize(8.5);
+  doc.setTextColor(...C.indigo);
+  doc.text(`◆  ${perfLabel}`, W - ml, y + 11, { align: "right" });
+
+  y += 28;
+
+  // ── SECTION LABEL ───────────────────────────────────
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8.5);
+  doc.setTextColor(...C.s500);
+  doc.text("SUBJECT-WISE PERFORMANCE", ml, y);
+  doc.setDrawColor(...C.s200);
+  doc.setLineWidth(0.3);
+  doc.line(ml + 60, y - 1, ml + cw, y - 1);
+
+  y += 5;
+
+  // ── TABLE ───────────────────────────────────────────
+  const hdrH    = 9;
+  const rowH    = 8.5;
+  const tableY0 = y;
+
+  function drawTableHeader(yy) {
+    doc.setFillColor(...C.s900);
+    doc.roundedRect(ml, yy, cw, hdrH, 2, 2, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8.5);
+    doc.setTextColor(...C.white);
+    doc.text("#",        cx(col.sno), yy + 6.2, { align: "center" });
+    doc.text("Subject",  col.sub.x + 2, yy + 6.2);
+    doc.text("Grade",    cx(col.grd), yy + 6.2, { align: "center" });
+    doc.text("Credits",  cx(col.crd), yy + 6.2, { align: "center" });
+    doc.text("Grd Pts",  cx(col.gp),  yy + 6.2, { align: "center" });
+    doc.text("Weighted", cx(col.wtd), yy + 6.2, { align: "center" });
+  }
+
+  drawTableHeader(y);
+  y += hdrH;
+
+  lastCalculation.subjects.forEach((s, idx) => {
+    if (y + rowH > H - 28) {
+      doc.addPage();
+      drawTableHeader(20);
+      y = 20 + hdrH;
+    }
+
+    // Alternating row background
+    doc.setFillColor(...(idx % 2 === 0 ? C.white : C.s50));
+    doc.rect(ml, y, cw, rowH, "F");
+
+    // Horizontal row separator
+    doc.setDrawColor(...C.s200);
+    doc.setLineWidth(0.2);
+    doc.line(ml, y + rowH, ml + cw, y + rowH);
+
+    // Vertical column dividers
+    doc.setDrawColor(210, 218, 232);
+    doc.setLineWidth(0.15);
+    [col.grd.x, col.crd.x, col.gp.x, col.wtd.x].forEach(vx => {
+      doc.line(vx, y, vx, y + rowH);
+    });
+
+    const ty = y + 5.8;
+    doc.setTextColor(...C.s700);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.text(String(idx + 1), cx(col.sno), ty, { align: "center" });
+    doc.text(s.subjectName,   col.sub.x + 2, ty, { maxWidth: col.sub.w - 4 });
+    doc.text(s.grade,         cx(col.grd), ty, { align: "center" });
+    doc.text(String(s.credits), cx(col.crd), ty, { align: "center" });
+    doc.text(String(s.gradePoint), cx(col.gp), ty, { align: "center" });
+
+    // Weighted score (grade pts × credits) — slightly bold, navy
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...C.navy);
+    doc.text(String(s.gradePoint * s.credits), cx(col.wtd), ty, { align: "center" });
+
+    y += rowH;
+  });
+
+  // Outer table border
+  doc.setDrawColor(...C.s200);
+  doc.setLineWidth(0.5);
+  doc.rect(ml, tableY0, cw, y - tableY0);
+
+  // ── FORMULA NOTE ────────────────────────────────────
+  y += 8;
+  doc.setFont("helvetica", "italic");
+  doc.setFontSize(8);
+  doc.setTextColor(...C.s400);
+  doc.text("CGPA  =  Σ (Grade Points × Credits)  /  Σ Credits", ml, y);
+
+  // ── FOOTER BAND ─────────────────────────────────────
+  doc.setFillColor(...C.navy);
+  doc.rect(0, H - 12, W, 12, "F");
+  doc.setFillColor(...C.indigo);
+  doc.rect(0, H - 12, W, 0.8, "F");
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.5);
+  doc.setTextColor(...C.dim);
+  doc.text(
+    "CGPA Buddy  ·  srirambharath-7.github.io/Anna-University-CGPA-Calculator",
+    W / 2, H - 5.5, { align: "center" }
+  );
 
   doc.save("anna-university-cgpa-report.pdf");
 }
