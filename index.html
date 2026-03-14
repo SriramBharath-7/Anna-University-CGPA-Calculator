@@ -3,8 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GradeForge</title>
-  <meta name="description" content="GradeForge is a modern Anna University CGPA calculator with a dynamic subject builder." />
+  <title>Anna University CGPA Calculator | CGPA Buddy</title>
+  <meta name="description" content="Anna University CGPA Calculator for Regulation 2025 and semester-wise grade calculation. CGPA Buddy helps students quickly calculate CGPA using credits and official grade points." />
+  <meta name="keywords" content="anna university cgpa calculator, anna university grade calculator, regulation 2025 cgpa, semester cgpa calculator, cgpa buddy, cgpa to percentage anna university, engineering cgpa calculator" />
+  <meta name="author" content="Sriram Bharath" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://srirambharath-7.github.io/GradeForge/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Anna University CGPA Calculator | CGPA Buddy" />
+  <meta property="og:description" content="Calculate Anna University CGPA instantly with subject-wise grade and credit inputs." />
+  <meta property="og:url" content="https://srirambharath-7.github.io/GradeForge/" />
+  <meta property="og:image" content="https://srirambharath-7.github.io/GradeForge/anvil.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Anna University CGPA Calculator | CGPA Buddy" />
+  <meta name="twitter:description" content="Fast and reliable CGPA calculator for Anna University students." />
   <link rel="icon" type="image/png" href="anvil.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -52,6 +64,10 @@
     };
   </script>
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
     :root {
       --bg-a: #070b1a;
       --bg-b: #0e1630;
@@ -103,19 +119,61 @@
     .subject-row {
       animation: fadeUp 0.38s ease forwards;
     }
+
+    .section-title {
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      color: rgba(46, 230, 255, 0.82);
+    }
+
+    .content-copy {
+      color: rgba(224, 231, 255, 0.84);
+      line-height: 1.72;
+    }
   </style>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Anna University CGPA Calculator",
+      "alternateName": "CGPA Buddy",
+      "url": "https://srirambharath-7.github.io/GradeForge/",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web Browser",
+      "description": "CGPA calculator for Anna University students with grade-point and credit based computation.",
+      "keywords": "anna university cgpa calculator, regulation 2025 cgpa, semester cgpa calculator",
+      "creator": {
+        "@type": "Person",
+        "name": "Sriram Bharath"
+      }
+    }
+  </script>
 </head>
 <body class="font-sans antialiased selection:bg-neon-cyan/30">
   <div class="grid-bg"></div>
 
   <main class="relative mx-auto max-w-5xl px-4 pb-14 pt-8 sm:px-6 lg:px-8">
-    <section class="glass neon-border animate-float rounded-3xl p-6 shadow-glow sm:p-8">
+    <header class="glass mb-6 rounded-2xl border border-white/15 px-5 py-4">
+      <nav class="flex flex-wrap items-center justify-between gap-4">
+        <a href="#home" class="text-sm font-semibold tracking-[0.2em] text-neon-cyan/85">CGPA Buddy</a>
+        <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
+          <a href="#home" class="rounded-lg border border-white/15 px-3 py-1.5 text-soft transition hover:border-neon-cyan/55 hover:text-white">Home</a>
+          <a href="#calculator" class="rounded-lg border border-white/15 px-3 py-1.5 text-soft transition hover:border-neon-cyan/55 hover:text-white">Calculator</a>
+          <a href="#about" class="rounded-lg border border-white/15 px-3 py-1.5 text-soft transition hover:border-neon-cyan/55 hover:text-white">About</a>
+          <a href="#how" class="rounded-lg border border-white/15 px-3 py-1.5 text-soft transition hover:border-neon-cyan/55 hover:text-white">How It Works</a>
+          <a href="#faq" class="rounded-lg border border-white/15 px-3 py-1.5 text-soft transition hover:border-neon-cyan/55 hover:text-white">FAQ</a>
+        </div>
+      </nav>
+    </header>
+
+    <section id="home" class="glass neon-border animate-float rounded-3xl p-6 shadow-glow sm:p-8">
       <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p class="text-sm uppercase tracking-[0.24em] text-neon-cyan/80">GradeForge</p>
-          <h1 class="mt-2 text-3xl font-bold leading-tight text-white sm:text-5xl">Forge Your CGPA</h1>
+          <p class="text-sm uppercase tracking-[0.24em] text-neon-cyan/80">CGPA Buddy</p>
+          <h1 class="mt-2 text-3xl font-bold leading-tight text-white sm:text-5xl">Anna University CGPA Calculator</h1>
           <p class="mt-3 max-w-xl text-soft">
-            Anna University Regulation 2025 (Semester I) CGPA calculator with official grade-point mapping and credit-based computation.
+            Accurate Anna University Regulation 2025 (Semester I) CGPA calculator using official grade-point mapping and credit-based weighted calculation.
           </p>
         </div>
 
@@ -129,7 +187,7 @@
         </button>
       </div>
 
-      <div class="overflow-hidden rounded-2xl border border-white/15 bg-slate-900/40">
+      <div id="calculator" class="overflow-hidden rounded-2xl border border-white/15 bg-slate-900/40">
         <div class="grid grid-cols-12 border-b border-white/10 px-4 py-3 text-xs uppercase tracking-[0.16em] text-soft sm:px-5">
           <div class="col-span-5 sm:col-span-6">Subject</div>
           <div class="col-span-4 sm:col-span-3">Grade</div>
@@ -170,6 +228,58 @@
         <span id="creditsCount" class="rounded-full border border-white/20 px-3 py-1">Total Credits: 0</span>
       </div>
     </section>
+
+    <section id="about" class="glass mt-8 rounded-3xl border border-white/15 p-6 sm:p-8">
+      <p class="section-title">About This Website</p>
+      <h2 class="mt-2 text-2xl font-bold text-white sm:text-3xl">Why this Anna University CGPA Calculator exists</h2>
+      <p class="content-copy mt-4">
+        CGPA Buddy was created for students who need a fast and reliable Anna University CGPA calculator when official portals are slow,
+        unavailable, or under maintenance during high-traffic result periods. Instead of waiting for a website to load, students can
+        instantly enter grades and credits and get a clean, accurate CGPA output.
+      </p>
+      <p class="content-copy mt-3">
+        The calculator follows Anna University grade-point logic and uses weighted credit computation, making it useful for semester planning,
+        internal score tracking, and quick what-if analysis before final results are published.
+      </p>
+    </section>
+
+    <section id="how" class="glass mt-8 rounded-3xl border border-white/15 p-6 sm:p-8">
+      <p class="section-title">How It Works</p>
+      <h2 class="mt-2 text-2xl font-bold text-white sm:text-3xl">Simple steps to calculate your CGPA</h2>
+      <ol class="content-copy mt-4 list-decimal space-y-2 pl-5">
+        <li>Add or edit subjects based on your semester subjects.</li>
+        <li>Select the correct grade for each subject: S, A+, A, B+, B, or U.</li>
+        <li>Enter the subject credit for each course.</li>
+        <li>Click Calculate CGPA to get the weighted CGPA instantly.</li>
+      </ol>
+      <p class="content-copy mt-4">
+        Formula used: CGPA = sum(gradePoint x credits) / sum(credits)
+      </p>
+    </section>
+
+    <section id="faq" class="glass mt-8 rounded-3xl border border-white/15 p-6 sm:p-8">
+      <p class="section-title">FAQ</p>
+      <h2 class="mt-2 text-2xl font-bold text-white sm:text-3xl">Frequently searched questions</h2>
+      <div class="mt-4 space-y-4">
+        <details class="rounded-xl border border-white/15 bg-black/20 p-4">
+          <summary class="cursor-pointer font-semibold text-white">Is this calculator only for Anna University?</summary>
+          <p class="content-copy mt-2">It is primarily optimized for Anna University grade-point mapping. You can still use it for any weighted grade system with the same scale.</p>
+        </details>
+        <details class="rounded-xl border border-white/15 bg-black/20 p-4">
+          <summary class="cursor-pointer font-semibold text-white">What if the university website is down?</summary>
+          <p class="content-copy mt-2">You can use this tool anytime to estimate and verify CGPA locally in your browser without waiting for official result portals.</p>
+        </details>
+        <details class="rounded-xl border border-white/15 bg-black/20 p-4">
+          <summary class="cursor-pointer font-semibold text-white">Can I calculate semester-wise CGPA quickly?</summary>
+          <p class="content-copy mt-2">Yes. Enter the subjects and credits for that semester and click Calculate CGPA for an instant weighted result.</p>
+        </details>
+      </div>
+    </section>
+
+    <footer class="mt-8 pb-4 text-center text-xs text-soft">
+      <p>CGPA Buddy - Anna University CGPA Calculator for students.</p>
+      <p class="mt-2">Quick links: <a href="#home" class="text-neon-cyan/90 hover:text-neon-cyan">Home</a> | <a href="#calculator" class="text-neon-cyan/90 hover:text-neon-cyan">Calculator</a> | <a href="#about" class="text-neon-cyan/90 hover:text-neon-cyan">About</a> | <a href="#faq" class="text-neon-cyan/90 hover:text-neon-cyan">FAQ</a></p>
+    </footer>
   </main>
 
   <template id="subjectRowTemplate">
