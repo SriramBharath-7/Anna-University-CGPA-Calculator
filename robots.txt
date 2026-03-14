@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://srirambharath-7.github.io/GradeForge/sitemap.xml
+Sitemap: https://srirambharath-7.github.io/Anna-University-CGPA-Calculator/sitemap.xml
