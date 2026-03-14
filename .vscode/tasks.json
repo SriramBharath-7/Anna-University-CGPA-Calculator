@@ -18,6 +18,16 @@
 			"args": [
 				"init"
 			]
+		},
+		{
+			"label": "git-push",
+			"type": "shell",
+			"command": "git add . && git commit -m \"Add GitHub link to footer and quick links\" && git push"
+		},
+		{
+			"label": "git-push-changes",
+			"type": "shell",
+			"command": "git add . && git commit -m \"Add GitHub link to footer and quick links\" && git push"
 		}
 	]
 }
