@@ -55,3 +55,7 @@ especially during times when university portals are busy or temporarily down.
 ## Repository
 
 [https://github.com/SriramBharath-7/Anna-University-CGPA-Calculator](https://github.com/SriramBharath-7/Anna-University-CGPA-Calculator)
+
+## Maintainer
+
+[Sriram Bharath](https://github.com/SriramBharath-7)
