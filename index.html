@@ -260,6 +260,16 @@
         <span id="subjectsCount" class="rounded-full border border-white/20 px-3 py-1">Subjects: 0</span>
         <span id="creditsCount" class="rounded-full border border-white/20 px-3 py-1">Total Credits: 0</span>
       </div>
+
+      <div class="mt-6">
+        <button
+          id="downloadPdfBtn"
+          class="hidden rounded-xl border border-neon-cyan/45 bg-neon-cyan/10 px-5 py-3 text-sm font-semibold text-neon-cyan transition duration-300 hover:bg-neon-cyan/20 hover:shadow-glowSoft"
+          type="button"
+        >
+          Download PDF Report
+        </button>
+      </div>
     </section>
 
     <section id="about" class="glass mt-8 rounded-3xl border border-white/15 p-6 sm:p-8">
@@ -354,6 +364,7 @@
     </div>
   </template>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
   <script src="app.js" defer></script>
 </body>
 </html>
